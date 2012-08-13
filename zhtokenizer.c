@@ -8,11 +8,6 @@
 #include "htable.h"
 #include "utf8util.h"
 
-#define OF_LINE 1
-#define OF_WORD 2
-static int option_format = OF_WORD;
-static int option_unmatch = 1;
-
 static void process_sentence (const unsigned short *sentence, int length)
 {
 	/*{
@@ -53,17 +48,14 @@ static void process_sentence (const unsigned short *sentence, int length)
 	}
 
 	for (i = 0; i < length; i += jump[i]) {
-		if (score[i] == score[i + jump[i]] && option_unmatch == 0)
+		if (score[i] == score[i + jump[i]]) // unmatched word
 			continue;
 		char wordmbs[MAXWORDLEN * 6 + 1];
 		encode_utf8_str((unsigned char *)wordmbs, sizeof(wordmbs), &sentence[i], jump[i]);
-		if (option_format == OF_WORD)
-			printf("%s ", wordmbs);
-		else
-			puts(wordmbs);
+		//printf("%s ", wordmbs);
+		puts(wordmbs);
 	}
-	if (option_format == OF_WORD)
-		puts("");
+	//puts("");
 }
 
 static void process_line (const unsigned short *line, int length)
@@ -104,29 +96,8 @@ static void process_file (FILE *fp)
 	}
 }
 
-void usage (void)
+int main (void)
 {
-	printf("usage ...\n");
-}
-
-int main (int argc, char *argv[])
-{
-	int i;
-	for (i = 1; i < argc; i ++) {
-		if (strcmp(argv[i], "-h") == 0 ||
-				strcmp(argv[i], "--help") == 0) {
-			usage();
-			return 0;
-		} else if (strcmp(argv[i], "-l")) {
-			option_format = OF_LINE;
-		} else if (strcmp(argv[i], "-w")) {
-			option_format = OF_WORD;
-		} else {
-			printf("unknown option %s\n", argv[i]);
-			return 1;
-		}
-	}
-
 	process_file(stdin);
 
 	return 1;
