@@ -48,7 +48,7 @@ static void process_sentence (const unsigned short *sentence, int length)
 	}
 
 	for (i = 0; i < length; i += jump[i]) {
-		if (score[i] == score[i + jump[i]]) // unmatched word
+		if (score[i] == score[i + jump[i]]) // skip unmatched word
 			continue;
 		char wordmbs[MAXWORDLEN * 6 + 1];
 		encode_utf8_str((unsigned char *)wordmbs, sizeof(wordmbs), &sentence[i], jump[i]);
